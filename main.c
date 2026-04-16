@@ -1,27 +1,25 @@
-#include<>stdio.h>
-#include<>stdstring.h>
+#include <stdio.h>
+#include <string.h>
 
 int main() {
     char input[1024];
 
-
-    while(1){
+    while(1) {
         printf("study-sh> ");
-
-
-        if(!fgets(input, 1024, stdin)) {
-            break;
-        }
         
-        input[strcspn(input, "\n")] = 0;
-
-        if(strcmp(input, "exit") == 0) || strcmp(input, "sleep" == 0 ) {
-            printf("Shutting down workspace. Goodnight!\n");
+        if (!fgets(input, 1024, stdin)) {
             break; 
         }
+
+        input[strcspn(input, "\n")] = 0;
+
+        if (strcmp(input, "exit") == 0 || strcmp(input, "sleep") == 0) {
+            printf("Shutting down workspace.\n");
+            break; 
+        }
+
         printf("You typed: %s\n", input);
     }
 
     return 0;
-
 }
