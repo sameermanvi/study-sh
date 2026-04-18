@@ -33,6 +33,14 @@ int main() {
             }
         }
         
+        // 3. NEW: Check for the help command
+        else if (strcmp(input, "help") == 0) {
+            printf("\n--- study-sh Commands ---\n");
+            printf("  help  : Show this list of commands\n");
+            printf("  build : Initialize study workspace (Creates Notes folder)\n");
+            printf("  exit  : Shut down the workspace (also 'sleep')\n");
+            printf("-------------------------\n\n");
+        }
         
         else {
             printf("Command not recognized: %s\n", input);
