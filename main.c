@@ -1,46 +1,72 @@
 #include <stdio.h>
 #include <string.h>
-#include <sys/stat.h> // New: For the mkdir function
+#include <sys/stat.h>
 
 int main() {
     char input[1024];
+    
+    //  a variable to track my current subject state
+    char current_mode[50] = ""; 
+
+    // my semester subjects
+    char *subjects[] = {"Chemistry", "Mechanics", "Electronics", "C_Programming"};
+    int num_subjects = 4;
 
     while(1) {
-        printf("study-sh> ");
-        
-        if (!fgets(input, 1024, stdin)) {
-            break; 
+        // The Context-Aware Prompt
+        // If current_mode has text in it, show the subject in brackets
+        if (strlen(current_mode) > 0) {
+            printf("[%s] study-sh> ", current_mode);
+        } else {
+            printf("study-sh> ");
         }
-
+        
+        if (!fgets(input, 1024, stdin)) break; 
         input[strcspn(input, "\n")] = 0;
 
-        
         if (strcmp(input, "exit") == 0 || strcmp(input, "sleep") == 0) {
-            printf("Shutting down workspace. Goodnight!\n");
+            printf("Shutting down workspace. See ya!\n");
             break; 
         }
         
-        // build command to set up the study workspace
+        // 2. UPGRADED: The Build Command
         else if (strcmp(input, "build") == 0) {
             printf("Initializing study workspace...\n");
+            mkdir("Notes", 0777); // Ensure the main folder exists
             
-            // Create the main Notes directory
-            // 0777 gives read/write/execute permissions
-            if (mkdir("Notes", 0777) == 0) {
-                printf(" Created 'Notes' directory.\n");
-            } else {
-                printf("'Notes' directory might already exist or an error occurred.\n");
+            // Loop through your subjects array and create a subfolder for each
+            for (int i = 0; i < num_subjects; i++) {
+                char path[100];
+                sprintf(path, "Notes/%s", subjects[i]); // Combines strings like "Notes/Mechanics"
+                
+                if (mkdir(path, 0777) == 0) {
+                    printf("Created %s\n", path);
+                } else {
+                    printf(" %s already exists.\n", path);
+                }
             }
         }
         
-        // 3. NEW: Check for the help command
         else if (strcmp(input, "help") == 0) {
             printf("\n--- study-sh Commands ---\n");
-            printf("  help  : Show this list of commands\n");
-            printf("  build : Initialize study workspace (Creates Notes folder)\n");
-            printf("  exit  : Shut down the workspace (also 'sleep')\n");
+            printf("  help        : Show this list\n");
+            printf("  build       : Initialize workspace folders\n");
+            printf("  [subject]   : Type a subject name (e.g., mechanics) to enter its mode\n");
+            printf("  leave       : Exit the current subject mode\n");
+            printf("  exit/sleep  : Shut down the workspace\n");
             printf("-------------------------\n\n");
         }
+        
+        // 3. NEW: Mode Exiting
+        else if (strcmp(input, "leave") == 0) {
+            strcpy(current_mode, ""); // Clear the string to return to base mode
+        }
+
+        // 4. NEW: Subject Switching Logic
+        else if (strcmp(input, "chemistry") == 0) strcpy(current_mode, "Chemistry");
+        else if (strcmp(input, "mechanics") == 0) strcpy(current_mode, "Mechanics");
+        else if (strcmp(input, "electronics") == 0) strcpy(current_mode, "Electronics");
+        else if (strcmp(input, "c_programming") == 0) strcpy(current_mode, "C_Programming");
         
         else {
             printf("Command not recognized: %s\n", input);
