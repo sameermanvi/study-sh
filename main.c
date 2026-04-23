@@ -47,6 +47,38 @@ int main() {
             }
         }
         
+        // 5. NEW: The Quick Capture 'add' Command
+        else if (strncmp(input, "add ", 4) == 0) {
+            // First, make sure we are actually in a subject mode
+            if (strlen(current_mode) == 0) {
+                printf("⚠️ You need to enter a subject mode first (e.g., type 'mechanics').\n");
+            } else {
+                // Extract everything after "add " (which is the note itself)
+                char *note_text = input + 4; 
+                
+                // Build the file path: Notes/Mechanics/notes.txt
+                char filepath[200];
+                sprintf(filepath, "Notes/%s/notes.txt", current_mode);
+
+                // 1. OPEN the file in "a" (append) mode. 
+                FILE *file = fopen(filepath, "a");
+                
+                if (file == NULL) {
+                    printf("Error: Could not open %s. Did you run 'build' first?\n", filepath);
+                } else {
+                    // 2. WRITE the note to the file with a bullet point and a newline
+                    fprintf(file, "- %s\n", note_text);
+                    
+                    // 3. CLOSE the file to save it to the hard drive
+                    fclose(file);
+                    printf(" Note added to %s\n", current_mode);
+                }
+            }
+        }
+
+
+
+
         else if (strcmp(input, "help") == 0) {
             printf("\n--- study-sh Commands ---\n");
             printf("  help        : Show this list\n");
